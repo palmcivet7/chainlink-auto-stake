@@ -20,8 +20,8 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     LinkTokenInterface public immutable i_link;
     ICommunityStakingPool public immutable i_stakingContract;
 
-    constructor(address linkTokenAddress, address _stakingContractAddress) {
-        i_link = LinkTokenInterface(linkTokenAddress);
+    constructor(address _linkTokenAddress, address _stakingContractAddress) {
+        i_link = LinkTokenInterface(_linkTokenAddress);
         i_stakingContract = ICommunityStakingPool(_stakingContractAddress);
     }
 
