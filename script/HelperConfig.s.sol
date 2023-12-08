@@ -4,6 +4,7 @@ pragma solidity 0.8.19;
 
 import {Script} from "forge-std/Script.sol";
 import {MockLinkToken} from "@chainlink/contracts/src/v0.8/mocks/MockLinkToken.sol";
+import {MockStakingPool} from "../test/mocks/MockStakingPool.sol";
 
 contract HelperConfig is Script {
     struct NetworkConfig {
@@ -36,7 +37,7 @@ contract HelperConfig is Script {
 
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
         MockLinkToken mockLink = new MockLinkToken();
-        address staking;
-        return NetworkConfig({link: address(mockLink), staking: address(staking)});
+        MockStakingPool mockStakingPool = new MockStakingPool();
+        return NetworkConfig({link: address(mockLink), staking: address(mockStakingPool)});
     }
 }
