@@ -10,7 +10,7 @@ interface ICommunityStakingPool {
 
     /**
      * @notice Unstakes a specified amount of LINK tokens from the staking pool.
-     * @param amount The amount of LINK tokens to unstake.
+     * @param _amount The amount of LINK tokens to unstake.
      */
-    function unstake(uint256 amount) external;
+    function unstake(uint256 _amount) external;
 }
