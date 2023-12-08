@@ -16,6 +16,7 @@ import "./interfaces/ICommunityStakingPool.sol";
  */
 
 contract ChainlinkAutoStake is Ownable, AutomationCompatible {
+    error ChainlinkAutoStake__NoLinkToDeposit();
     error ChainlinkAutoStake__NoLinkToWithdraw();
     error ChainlinkAutoStake__LinkTransferFailed();
 
@@ -37,6 +38,8 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         cannotExecute
         returns (bool upkeepNeeded, bytes memory /* performData */ )
     {
+        uint256 balance = i_link.balanceOf(address(this));
+        if (balance == 0) revert ChainlinkAutoStake__NoLinkToDeposit();
         upkeepNeeded = i_stakingContract.getTotalPrincipal() < i_stakingContract.getMaxPoolSize();
         return (upkeepNeeded, "");
     }
