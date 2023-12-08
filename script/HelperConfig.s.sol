@@ -37,7 +37,7 @@ contract HelperConfig is Script {
 
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
         MockLinkToken mockLink = new MockLinkToken();
-        MockStakingPool mockStakingPool = new MockStakingPool();
+        MockStakingPool mockStakingPool = new MockStakingPool(address(mockLink));
         return NetworkConfig({link: address(mockLink), staking: address(mockStakingPool)});
     }
 }
