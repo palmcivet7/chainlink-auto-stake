@@ -25,7 +25,10 @@ contract HelperConfig is Script {
     }
 
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
-        return NetworkConfig({link: 0x779877A7B0D9E8603169DdbD7836e478b4624789, staking: address(0)});
+        return NetworkConfig({
+            link: 0x779877A7B0D9E8603169DdbD7836e478b4624789,
+            staking: 0x3141B5D66daED0A04EB7BB19C27F49a1c8A9F0B1 // MockStakingPool
+        });
     }
 
     function getMainnetConfig() public pure returns (NetworkConfig memory) {

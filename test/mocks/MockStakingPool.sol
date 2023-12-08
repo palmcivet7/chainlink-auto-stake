@@ -7,9 +7,12 @@ import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interface
 
 contract MockStakingPool is Ownable {
     error MockStakingPool__TotalPrincipalCannotExceedMaxPoolSize();
+    error MockStakingPool__OnlyLinkContractAddressCanCall();
     error MockStakingPool__NoLinkToWithdraw();
     error MockStakingPool__LinkTransferFailed();
     error MockStakingPool_InvalidAmount();
+
+    event LinkTokensReceived(address sender, uint256 amount, bytes data);
 
     LinkTokenInterface public immutable i_link;
     uint256 private totalPrincipal;
@@ -29,6 +32,12 @@ contract MockStakingPool is Ownable {
 
     function getTotalPrincipal() external view returns (uint256) {
         return totalPrincipal;
+    }
+
+    function onTokenTransfer(address _sender, uint256 _value, bytes calldata _data) external returns (bool) {
+        if (msg.sender != address(i_link)) revert MockStakingPool__OnlyLinkContractAddressCanCall();
+        emit LinkTokensReceived(_sender, _value, _data);
+        return true;
     }
 
     /**
