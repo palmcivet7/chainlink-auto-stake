@@ -102,6 +102,18 @@ contract ChainlinkAutoStakeTest is Test {
     /////// Withdraw ////////
     ////////////////////////
 
+    function testUnstakeWorks() public fundStakingPoolWithLink {
+        vm.startPrank(msg.sender);
+        uint256 poolStartingBalance = MockLinkToken(linkAddress).balanceOf(address(stakingAddress));
+        uint256 contractStartingBalance = MockLinkToken(linkAddress).balanceOf(address(autoStake));
+        autoStake.unstake(USER_BALANCE);
+        uint256 poolEndingBalance = MockLinkToken(linkAddress).balanceOf(address(stakingAddress));
+        uint256 contractEndingBalance = MockLinkToken(linkAddress).balanceOf(address(autoStake));
+        vm.stopPrank();
+        assertEq(poolStartingBalance, contractEndingBalance);
+        assertEq(contractStartingBalance, poolEndingBalance);
+    }
+
     function testUnstakeRevertsIfNotOwner() public {
         vm.startPrank(USER);
         vm.expectRevert("Ownable: caller is not the owner");
