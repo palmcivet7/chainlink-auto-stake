@@ -139,4 +139,11 @@ contract ChainlinkAutoStakeTest is Test {
         autoStake.withdrawLink();
         vm.stopPrank();
     }
+
+    function testWithdrawRevertsIfNotBalance() public {
+        vm.startPrank(msg.sender);
+        vm.expectRevert(ChainlinkAutoStake.ChainlinkAutoStake__NoLinkToWithdraw.selector);
+        autoStake.withdrawLink();
+        vm.stopPrank();
+    }
 }
