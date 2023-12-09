@@ -4,7 +4,7 @@ This is a smart contract that monitors the Chainlink staking pool for withdrawal
 
 [Video Demonstration](https://www.youtube.com/watch?v=1wUCTC_FNNE)
 
-<!-- [Tutorial video](https://www.youtube.com/watch?v=81r7rqmJnLo) -->
+[Tutorial video](https://www.youtube.com/watch?v=HLrTLMZpdoM)
 
 ## Table of Contents
 
