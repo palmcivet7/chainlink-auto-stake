@@ -47,7 +47,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     function performUpkeep(bytes calldata /* performData */ ) external {
         uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
         uint256 balance = i_link.balanceOf(address(this));
-        if (availableSpace <= balance) {
+        if (availableSpace < balance) {
             i_link.transferAndCall(address(i_stakingContract), availableSpace, "");
         } else {
             i_link.transferAndCall(address(i_stakingContract), balance, "");
