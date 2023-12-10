@@ -56,6 +56,13 @@ contract ChainlinkAutoStakeTest is Test {
         _;
     }
 
+    modifier setTotalPrincipalToMax() {
+        vm.startPrank(0x104fBc016F4bb334D775a19E8A6510109AC63E00);
+        MockStakingPool(stakingAddress).setTotalPrincipal(40875000000000000000000000);
+        vm.stopPrank();
+        _;
+    }
+
     ////////////////////////
     ////// checkUpkeep ////
     //////////////////////
@@ -96,6 +103,20 @@ contract ChainlinkAutoStakeTest is Test {
         vm.stopPrank();
         assertEq(autoStakeEndingBalance, autoStakeStartingBalance - availableSpace);
         assertEq(stakingPoolEndingBalance, stakingPoolStartingBalance + availableSpace);
+    }
+
+    function testPerformUpkeepRevertsIfNoLinkDeposited() public {
+        vm.startPrank(msg.sender);
+        vm.expectRevert(ChainlinkAutoStake.ChainlinkAutoStake__NoLinkToDeposit.selector);
+        autoStake.performUpkeep("");
+        vm.stopPrank();
+    }
+
+    function testPerformUpkeepRevertsIfNoSpaceInPool() public fundContractWithLink setTotalPrincipalToMax {
+        vm.startPrank(msg.sender);
+        vm.expectRevert(ChainlinkAutoStake.ChainlinkAutoStake__NoSpaceInPool.selector);
+        autoStake.performUpkeep("");
+        vm.stopPrank();
     }
 
     //////////////////////////
