@@ -28,7 +28,7 @@ The `performUpkeep()` function calls the `transferAndCall()` function on the LIN
 
 An `ICommunityStakingPool` interface is used for interacting with the staking pool contract.
 
-`onlyOwner` modifiers are used to ensure only the owner of a contract can unstake and withdraw their LINK tokens.
+`onlyOwner` modifiers are used to ensure only the owner of a contract can migrate, unstake and withdraw their LINK tokens.
 
 ## Deployments/Transactions
 
