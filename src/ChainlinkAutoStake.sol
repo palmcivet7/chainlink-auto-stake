@@ -59,6 +59,10 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /////// Withdraw ////////
     ////////////////////////
 
+    function migrate(bytes calldata _data) public onlyOwner {
+        i_stakingContract.migrate(_data);
+    }
+
     function unstake(uint256 _amount) public onlyOwner {
         i_stakingContract.unstake(_amount);
     }

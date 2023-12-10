@@ -123,6 +123,19 @@ contract ChainlinkAutoStakeTest is Test {
     /////// Withdraw ////////
     ////////////////////////
 
+    function testMigrateWorks() public {
+        vm.startPrank(msg.sender);
+        autoStake.migrate("");
+        vm.stopPrank();
+    }
+
+    function testMigrateRevertsIfNotOwner() public {
+        vm.startPrank(USER);
+        vm.expectRevert("Ownable: caller is not the owner");
+        autoStake.migrate("");
+        vm.stopPrank();
+    }
+
     function testUnstakeWorks() public fundStakingPoolWithLink {
         vm.startPrank(msg.sender);
         uint256 poolStartingBalance = MockLinkToken(linkAddress).balanceOf(address(stakingAddress));

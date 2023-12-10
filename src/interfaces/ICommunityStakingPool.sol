@@ -13,4 +13,6 @@ interface ICommunityStakingPool {
      * @param _amount The amount of LINK tokens to unstake.
      */
     function unstake(uint256 _amount) external;
+
+    function migrate(bytes calldata _data) external;
 }

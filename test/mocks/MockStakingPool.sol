@@ -13,6 +13,7 @@ contract MockStakingPool is Ownable {
     error MockStakingPool_InvalidAmount();
 
     event LinkTokensReceived(address sender, uint256 amount, bytes data);
+    event LinkTokensMigrated(address sender, bytes data);
 
     LinkTokenInterface public immutable i_link;
     uint256 private totalPrincipal;
@@ -49,5 +50,9 @@ contract MockStakingPool is Ownable {
         if (balance == 0) revert MockStakingPool__NoLinkToWithdraw();
         if (_amount > balance) revert MockStakingPool_InvalidAmount();
         if (!i_link.transfer(msg.sender, _amount)) revert MockStakingPool__LinkTransferFailed();
+    }
+
+    function migrate(bytes calldata _data) external {
+        emit LinkTokensMigrated(msg.sender, _data);
     }
 }
