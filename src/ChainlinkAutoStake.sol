@@ -17,6 +17,7 @@ import "./interfaces/ICommunityStakingPool.sol";
 
 contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     error ChainlinkAutoStake__NoLinkToDeposit();
+    error ChainlinkAutoStake__NoSpaceInPool();
     error ChainlinkAutoStake__NoLinkToWithdraw();
     error ChainlinkAutoStake__LinkTransferFailed();
 
@@ -38,15 +39,15 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         cannotExecute
         returns (bool upkeepNeeded, bytes memory /* performData */ )
     {
-        uint256 balance = i_link.balanceOf(address(this));
-        if (balance == 0) revert ChainlinkAutoStake__NoLinkToDeposit();
         upkeepNeeded = i_stakingContract.getTotalPrincipal() < i_stakingContract.getMaxPoolSize();
         return (upkeepNeeded, "");
     }
 
     function performUpkeep(bytes calldata /* performData */ ) external {
-        uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
         uint256 balance = i_link.balanceOf(address(this));
+        if (balance == 0) revert ChainlinkAutoStake__NoLinkToDeposit();
+        uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
+        if (availableSpace == 0) revert ChainlinkAutoStake__NoSpaceInPool();
         if (availableSpace < balance) {
             i_link.transferAndCall(address(i_stakingContract), availableSpace, "");
         } else {
