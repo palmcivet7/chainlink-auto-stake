@@ -11,6 +11,7 @@ This is a smart contract that monitors the Chainlink staking pool for withdrawal
 - [Chainlink Auto Stake](#chainlink-auto-stake)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
+  - [Usage](#usage)
   - [Deployment Instructions](#deployment-instructions)
   - [Deployments/Transactions](#deploymentstransactions)
   - [License](#license)
@@ -30,6 +31,10 @@ The `performUpkeep()` function calls the `transferAndCall()` function on the LIN
 An `ICommunityStakingPool` interface is used for interacting with the staking pool contract.
 
 `onlyOwner` modifiers are used to ensure only the owner of a contract can migrate, unstake and withdraw their LINK tokens.
+
+## Usage
+
+To use this contract it must be funded with LINK tokens and registered with Chainlink Custom Logic Automation.
 
 ## Deployment Instructions
 
