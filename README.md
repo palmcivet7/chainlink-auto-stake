@@ -11,6 +11,7 @@ This is a smart contract that monitors the Chainlink staking pool for withdrawal
 - [Chainlink Auto Stake](#chainlink-auto-stake)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
+  - [Deployment Instructions](#deployment-instructions)
   - [Deployments/Transactions](#deploymentstransactions)
   - [License](#license)
 
@@ -29,6 +30,22 @@ The `performUpkeep()` function calls the `transferAndCall()` function on the LIN
 An `ICommunityStakingPool` interface is used for interacting with the staking pool contract.
 
 `onlyOwner` modifiers are used to ensure only the owner of a contract can migrate, unstake and withdraw their LINK tokens.
+
+## Deployment Instructions
+
+Please provide a `.env` file that includes a `$PRIVATE_KEY` and `$RPC_URL`.
+
+Then to deploy the _Chainlink Auto Stake_ contract run the following command:
+
+```
+forge script script/DeployChainlinkAutoStake.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+```
+
+The _Mock Staking Pool_ contract can be deployed for testing purposes with the following command:
+
+```
+forge script script/DeployMockStakingPool.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+```
 
 ## Deployments/Transactions
 
