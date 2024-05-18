@@ -69,4 +69,15 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         if (balance == 0) revert ChainlinkAutoStake__NoLinkToWithdraw();
         if (!i_link.transfer(msg.sender, balance)) revert ChainlinkAutoStake__LinkTransferFailed();
     }
+
+    /*//////////////////////////////////////////////////////////////
+                                 GETTER
+    //////////////////////////////////////////////////////////////*/
+    function getLink() external view returns (LinkTokenInterface) {
+        return i_link;
+    }
+
+    function getStakingPool() external view returns (ICommunityStakingPool) {
+        return i_stakingContract;
+    }
 }
