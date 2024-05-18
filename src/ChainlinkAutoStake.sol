@@ -43,28 +43,27 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /*//////////////////////////////////////////////////////////////
                                AUTOMATION
     //////////////////////////////////////////////////////////////*/
-    function checkUpkeep(bytes calldata /* checkData */ )
+    function checkUpkeep(bytes calldata)
         external
         view
         cannotExecute
-        returns (bool upkeepNeeded, bytes memory /* performData */ )
+        returns (bool upkeepNeeded, bytes memory performData)
     {
+        uint256 balance = i_link.balanceOf(address(this));
+        uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
+        if (availableSpace < balance) performData = abi.encode(availableSpace);
+        else performData = abi.encode(balance);
+
         upkeepNeeded = i_stakingContract.getTotalPrincipal() < i_stakingContract.getMaxPoolSize();
-        return (upkeepNeeded, "");
+        return (upkeepNeeded, performData);
     }
 
-    function performUpkeep(bytes calldata /* performData */ ) external {
+    function performUpkeep(bytes calldata _performData) external {
         if (msg.sender != s_forwarder) revert ChainlinkAutoStake__OnlyForwarder();
 
-        uint256 balance = i_link.balanceOf(address(this));
-        if (balance == 0) revert ChainlinkAutoStake__NoLinkToDeposit();
-        uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
-        if (availableSpace == 0) revert ChainlinkAutoStake__NoSpaceInPool();
-        if (availableSpace < balance) {
-            i_link.transferAndCall(address(i_stakingContract), availableSpace, "");
-        } else {
-            i_link.transferAndCall(address(i_stakingContract), balance, "");
-        }
+        uint256 stakeAmount = abi.decode(_performData, (uint256));
+
+        i_link.transferAndCall(address(i_stakingContract), stakeAmount, "");
     }
 
     /*//////////////////////////////////////////////////////////////
