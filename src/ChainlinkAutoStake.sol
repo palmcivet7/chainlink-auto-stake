@@ -8,13 +8,12 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/ICommunityStakingPool.sol";
 
 /**
- * @author palmcivet.eth
+ * @author palmcivet
  * @title Chainlink Auto Stake
  *
  * @notice This contract monitors withdrawals from the Chainlink Community Staking Pool contract
  * and then uses Chainlink Automation to deposit into it.
  */
-
 contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     error ChainlinkAutoStake__NoLinkToDeposit();
     error ChainlinkAutoStake__NoSpaceInPool();
@@ -29,10 +28,9 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         i_stakingContract = ICommunityStakingPool(_stakingContractAddress);
     }
 
-    //////////////////////////
-    /////// Automation //////
-    ////////////////////////
-
+    /*//////////////////////////////////////////////////////////////
+                               AUTOMATION
+    //////////////////////////////////////////////////////////////*/
     function checkUpkeep(bytes calldata /* checkData */ )
         external
         view
@@ -55,10 +53,9 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         }
     }
 
-    //////////////////////////
-    /////// Withdraw ////////
-    ////////////////////////
-
+    /*//////////////////////////////////////////////////////////////
+                                WITHDRAW
+    //////////////////////////////////////////////////////////////*/
     function migrate(bytes calldata _data) public onlyOwner {
         i_stakingContract.migrate(_data);
     }
