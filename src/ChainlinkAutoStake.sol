@@ -15,14 +15,26 @@ import "./interfaces/ICommunityStakingPool.sol";
  * and then uses Chainlink Automation to deposit into it.
  */
 contract ChainlinkAutoStake is Ownable, AutomationCompatible {
+    /*//////////////////////////////////////////////////////////////
+                                 ERRORS
+    //////////////////////////////////////////////////////////////*/
+    error ChainlinkAutoStake__OnlyForwarder();
     error ChainlinkAutoStake__NoLinkToDeposit();
     error ChainlinkAutoStake__NoSpaceInPool();
     error ChainlinkAutoStake__NoLinkToWithdraw();
     error ChainlinkAutoStake__LinkTransferFailed();
 
+    /*//////////////////////////////////////////////////////////////
+                               VARIABLES
+    //////////////////////////////////////////////////////////////*/
     LinkTokenInterface internal immutable i_link;
     ICommunityStakingPool internal immutable i_stakingContract;
 
+    address internal s_forwarder;
+
+    /*//////////////////////////////////////////////////////////////
+                              CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
     constructor(address _linkTokenAddress, address _stakingContractAddress) {
         i_link = LinkTokenInterface(_linkTokenAddress);
         i_stakingContract = ICommunityStakingPool(_stakingContractAddress);
@@ -42,6 +54,8 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     }
 
     function performUpkeep(bytes calldata /* performData */ ) external {
+        if (msg.sender != s_forwarder) revert ChainlinkAutoStake__OnlyForwarder();
+
         uint256 balance = i_link.balanceOf(address(this));
         if (balance == 0) revert ChainlinkAutoStake__NoLinkToDeposit();
         uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
@@ -68,6 +82,13 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         uint256 balance = i_link.balanceOf(address(this));
         if (balance == 0) revert ChainlinkAutoStake__NoLinkToWithdraw();
         if (!i_link.transfer(msg.sender, balance)) revert ChainlinkAutoStake__LinkTransferFailed();
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                                 SETTER
+    //////////////////////////////////////////////////////////////*/
+    function setForwarder(address _forwarder) external onlyOwner {
+        s_forwarder = _forwarder;
     }
 
     /*//////////////////////////////////////////////////////////////
