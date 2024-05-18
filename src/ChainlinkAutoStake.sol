@@ -19,8 +19,6 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
     error ChainlinkAutoStake__OnlyForwarder();
-    error ChainlinkAutoStake__NoLinkToDeposit();
-    error ChainlinkAutoStake__NoSpaceInPool();
     error ChainlinkAutoStake__NoLinkToWithdraw();
     error ChainlinkAutoStake__LinkTransferFailed();
 
