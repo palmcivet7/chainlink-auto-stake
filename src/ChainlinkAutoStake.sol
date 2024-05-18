@@ -20,8 +20,8 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     error ChainlinkAutoStake__NoLinkToWithdraw();
     error ChainlinkAutoStake__LinkTransferFailed();
 
-    LinkTokenInterface public immutable i_link;
-    ICommunityStakingPool public immutable i_stakingContract;
+    LinkTokenInterface internal immutable i_link;
+    ICommunityStakingPool internal immutable i_stakingContract;
 
     constructor(address _linkTokenAddress, address _stakingContractAddress) {
         i_link = LinkTokenInterface(_linkTokenAddress);
