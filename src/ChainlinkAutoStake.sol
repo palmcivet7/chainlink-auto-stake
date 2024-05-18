@@ -56,15 +56,15 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /*//////////////////////////////////////////////////////////////
                                 WITHDRAW
     //////////////////////////////////////////////////////////////*/
-    function migrate(bytes calldata _data) public onlyOwner {
+    function migrate(bytes calldata _data) external onlyOwner {
         i_stakingContract.migrate(_data);
     }
 
-    function unstake(uint256 _amount) public onlyOwner {
+    function unstake(uint256 _amount) external onlyOwner {
         i_stakingContract.unstake(_amount);
     }
 
-    function withdrawLink() public onlyOwner {
+    function withdrawLink() external onlyOwner {
         uint256 balance = i_link.balanceOf(address(this));
         if (balance == 0) revert ChainlinkAutoStake__NoLinkToWithdraw();
         if (!i_link.transfer(msg.sender, balance)) revert ChainlinkAutoStake__LinkTransferFailed();
