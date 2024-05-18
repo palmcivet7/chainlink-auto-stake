@@ -38,6 +38,8 @@ To use this contract it must be funded with LINK tokens and registered with Chai
 
 ## Deployment Instructions
 
+You should have [Foundry](https://book.getfoundry.sh/getting-started/installation) installed.
+
 Please provide a `.env` file that includes a `$PRIVATE_KEY` and `$RPC_URL`.
 
 Then to deploy the _Chainlink Auto Stake_ contract run the following command:
