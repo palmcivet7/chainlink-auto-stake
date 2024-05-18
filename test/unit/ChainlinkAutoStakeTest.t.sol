@@ -27,8 +27,8 @@ contract ChainlinkAutoStakeTest is Test {
     }
 
     function testConstructorSetsValuesCorrectly() public {
-        assertEq(address(autoStake.i_link()), linkAddress);
-        assertEq(address(autoStake.i_stakingContract()), stakingAddress);
+        assertEq(address(autoStake.getLink()), linkAddress);
+        assertEq(address(autoStake.getStakingPool()), stakingAddress);
     }
 
     ////////////////////////
