@@ -10,7 +10,6 @@ import "./interfaces/ICommunityStakingPool.sol";
 /**
  * @author palmcivet
  * @title Chainlink Auto Stake
- *
  * @notice This contract monitors withdrawals from the Chainlink Community Staking Pool contract
  * and then uses Chainlink Automation to deposit into it.
  */
@@ -28,6 +27,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     LinkTokenInterface internal immutable i_link;
     ICommunityStakingPool internal immutable i_stakingContract;
 
+    /// @dev automation forwarder contract unique to subscription
     address internal s_forwarder;
 
     /*//////////////////////////////////////////////////////////////
@@ -41,6 +41,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /*//////////////////////////////////////////////////////////////
                                AUTOMATION
     //////////////////////////////////////////////////////////////*/
+    /// @dev called continuously offchain by automation nodes
     function checkUpkeep(bytes calldata)
         external
         view
@@ -56,6 +57,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         return (upkeepNeeded, performData);
     }
 
+    /// @dev called by automation forwarder to stake tokens when checkUpkeep returns true
     function performUpkeep(bytes calldata _performData) external {
         if (msg.sender != s_forwarder) revert ChainlinkAutoStake__OnlyForwarder();
 
@@ -67,10 +69,13 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /*//////////////////////////////////////////////////////////////
                                 WITHDRAW
     //////////////////////////////////////////////////////////////*/
+    /// @dev migrates to the next iteration of staking
+    /// @notice staking contract would need to be updated and therefore not immutable
     function migrate(bytes calldata _data) external onlyOwner {
         i_stakingContract.migrate(_data);
     }
 
+    /// @dev unstakes tokens from staking contract
     function unstake(uint256 _amount) external onlyOwner {
         i_stakingContract.unstake(_amount);
     }
