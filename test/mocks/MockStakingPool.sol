@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
@@ -18,7 +18,7 @@ contract MockStakingPool is Ownable {
     LinkTokenInterface public immutable i_link;
     uint256 private totalPrincipal;
 
-    constructor(address _linkTokenAddress) {
+    constructor(address _linkTokenAddress) Ownable(msg.sender) {
         i_link = LinkTokenInterface(_linkTokenAddress);
     }
 

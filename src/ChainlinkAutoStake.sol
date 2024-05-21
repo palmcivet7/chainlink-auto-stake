@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.20;
 
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import {AutomationCompatible} from "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
@@ -33,7 +33,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
-    constructor(address _linkTokenAddress, address _stakingContractAddress) {
+    constructor(address _linkTokenAddress, address _stakingContractAddress) Ownable(msg.sender) {
         i_link = LinkTokenInterface(_linkTokenAddress);
         i_stakingContract = ICommunityStakingPool(_stakingContractAddress);
     }
