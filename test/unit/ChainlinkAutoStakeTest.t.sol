@@ -20,11 +20,15 @@ contract ChainlinkAutoStakeTest is Test {
     address public USER = makeAddr("USER");
     uint256 public USER_BALANCE = 1000 ether; // 1000 LINK
 
+    address forwarder = makeAddr("forwarder");
+
     function setUp() public {
         DeployChainlinkAutoStake deployer = new DeployChainlinkAutoStake();
         (autoStake, helperConfig) = deployer.run();
         (linkAddress, stakingAddress) = helperConfig.activeNetworkConfig();
         MockLinkToken(linkAddress).setBalance(msg.sender, USER_BALANCE);
+        vm.prank(autoStake.owner());
+        autoStake.setForwarder(forwarder);
     }
 
     function testConstructorSetsValuesCorrectly() public {
@@ -104,6 +108,13 @@ contract ChainlinkAutoStakeTest is Test {
         vm.stopPrank();
         assertEq(autoStakeEndingBalance, autoStakeStartingBalance - availableSpace);
         assertEq(stakingPoolEndingBalance, stakingPoolStartingBalance + availableSpace);
+    }
+
+    function testPerformUpkeepRevertsIfNotForwarder() public {
+        vm.startPrank(msg.sender);
+        vm.expectRevert(ChainlinkAutoStake.ChainlinkAutoStake__OnlyForwarder.selector);
+        autoStake.performUpkeep("");
+        vm.stopPrank();
     }
 
     // function testPerformUpkeepRevertsIfNoLinkDeposited() public {
