@@ -31,6 +31,11 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     address internal s_forwarder;
 
     /*//////////////////////////////////////////////////////////////
+                                 EVENTS
+    //////////////////////////////////////////////////////////////*/
+    event LinkStaked(uint256 amount);
+
+    /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
     constructor(address _linkTokenAddress, address _stakingContractAddress) Ownable(msg.sender) {
@@ -62,6 +67,8 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         if (msg.sender != s_forwarder) revert ChainlinkAutoStake__OnlyForwarder();
 
         uint256 stakeAmount = abi.decode(_performData, (uint256));
+
+        emit LinkStaked(stakeAmount);
 
         i_link.transferAndCall(address(i_stakingContract), stakeAmount, "");
     }
