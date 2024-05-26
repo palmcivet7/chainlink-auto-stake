@@ -34,6 +34,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
     event LinkStaked(uint256 amount);
+    event LinkUnstaked(uint256 amount);
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
@@ -84,6 +85,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
 
     /// @dev unstakes tokens from staking contract
     function unstake(uint256 _amount) external onlyOwner {
+        emit LinkUnstaked(_amount);
         i_stakingContract.unstake(_amount);
     }
 
