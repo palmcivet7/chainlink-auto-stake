@@ -35,6 +35,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     //////////////////////////////////////////////////////////////*/
     event LinkStaked(uint256 amount);
     event LinkUnstaked(uint256 amount);
+    event LinkMigrated();
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
@@ -80,6 +81,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /// @dev migrates to the next iteration of staking
     /// @notice staking contract would need to be updated and therefore not immutable
     function migrate(bytes calldata _data) external onlyOwner {
+        emit LinkMigrated();
         i_stakingContract.migrate(_data);
     }
 
