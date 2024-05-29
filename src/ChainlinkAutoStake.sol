@@ -25,8 +25,8 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
                                VARIABLES
     //////////////////////////////////////////////////////////////*/
     LinkTokenInterface internal immutable i_link;
-    ICommunityStakingPool internal immutable i_stakingContract;
 
+    ICommunityStakingPool internal s_stakingContract;
     /// @dev automation forwarder contract unique to subscription
     address internal s_forwarder;
 
@@ -42,7 +42,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     //////////////////////////////////////////////////////////////*/
     constructor(address _linkTokenAddress, address _stakingContractAddress) Ownable(msg.sender) {
         i_link = LinkTokenInterface(_linkTokenAddress);
-        i_stakingContract = ICommunityStakingPool(_stakingContractAddress);
+        s_stakingContract = ICommunityStakingPool(_stakingContractAddress);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -56,11 +56,11 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
         returns (bool upkeepNeeded, bytes memory performData)
     {
         uint256 balance = i_link.balanceOf(address(this));
-        uint256 availableSpace = i_stakingContract.getMaxPoolSize() - i_stakingContract.getTotalPrincipal();
+        uint256 availableSpace = s_stakingContract.getMaxPoolSize() - s_stakingContract.getTotalPrincipal();
         if (availableSpace < balance) performData = abi.encode(availableSpace);
         else performData = abi.encode(balance);
 
-        upkeepNeeded = i_stakingContract.getTotalPrincipal() < i_stakingContract.getMaxPoolSize();
+        upkeepNeeded = s_stakingContract.getTotalPrincipal() < s_stakingContract.getMaxPoolSize();
         return (upkeepNeeded, performData);
     }
 
@@ -72,7 +72,7 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
 
         emit LinkStaked(stakeAmount);
 
-        i_link.transferAndCall(address(i_stakingContract), stakeAmount, "");
+        i_link.transferAndCall(address(s_stakingContract), stakeAmount, "");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -82,13 +82,13 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /// @notice staking contract would need to be updated and therefore not immutable
     function migrate(bytes calldata _data) external onlyOwner {
         emit LinkMigrated();
-        i_stakingContract.migrate(_data);
+        s_stakingContract.migrate(_data);
     }
 
     /// @dev unstakes tokens from staking contract
     function unstake(uint256 _amount) external onlyOwner {
         emit LinkUnstaked(_amount);
-        i_stakingContract.unstake(_amount);
+        s_stakingContract.unstake(_amount);
     }
 
     function withdrawLink() external onlyOwner {
@@ -100,6 +100,10 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     /*//////////////////////////////////////////////////////////////
                                  SETTER
     //////////////////////////////////////////////////////////////*/
+    function setStakingContract(address _stakingContract) external onlyOwner {
+        s_stakingContract = ICommunityStakingPool(_stakingContract);
+    }
+
     function setForwarder(address _forwarder) external onlyOwner {
         s_forwarder = _forwarder;
     }
@@ -112,6 +116,6 @@ contract ChainlinkAutoStake is Ownable, AutomationCompatible {
     }
 
     function getStakingPool() external view returns (ICommunityStakingPool) {
-        return i_stakingContract;
+        return s_stakingContract;
     }
 }
